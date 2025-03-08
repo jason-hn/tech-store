@@ -2,30 +2,36 @@ import React from 'react'
 
 const FormInput = ({ 
   label, 
-  id, 
   type = 'text', 
-  placeholder = '', 
+  id,
+  name,
   value, 
   onChange, 
-  error, 
-  required = false 
+  placeholder = '', 
+  required = false,
+  disabled = false,
+  error = '',
 }) => {
+  const inputName = name || id
+  const inputId = id || name
+
   return (
     <div className="mb-4">
-      {label && (
-        <label htmlFor={id} className="block text-gray-700 font-medium mb-2">
-          {label} {required && <span className="text-danger">*</span>}
-        </label>
-      )}
+      <label htmlFor={inputId} className="block text-gray-700 font-medium mb-2">
+        {label} {required && <span className="text-danger">*</span>}
+      </label>
       <input
-        id={id}
-        name={id}
         type={type}
+        id={inputId}
+        name={inputName}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className={`form-input ${error ? 'border-danger focus:border-danger focus:ring-danger' : ''}`}
         required={required}
+        disabled={disabled}
+        className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary 
+          ${disabled ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'}
+          ${error ? 'border-danger ring-1 ring-danger' : 'border-gray-300'}`}
       />
       {error && <p className="mt-1 text-danger text-sm">{error}</p>}
     </div>

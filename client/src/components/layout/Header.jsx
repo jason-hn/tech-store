@@ -30,7 +30,8 @@ const Header = () => {
                 <FaUser />
                 <span>{user.name}</span>
               </div>
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-hover:block">
+              <div className="absolute w-full h-3 bottom-0 left-0 transform translate-y-full"></div>
+              <div className="absolute right-0 mt-3 w-48 bg-white rounded-md shadow-lg py-1 hidden group-hover:block z-10">
                 <Link to="/profile" className="block px-4 py-2 text-dark hover:bg-gray-100">Profile</Link>
                 <button onClick={logout} className="block w-full text-left px-4 py-2 text-dark hover:bg-gray-100">
                   Logout

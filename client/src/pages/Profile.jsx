@@ -5,22 +5,19 @@ import Button from '../components/common/Button'
 import Error from '../components/common/Error'
 
 const Profile = () => {
-  const { user, error } = useStore(state => ({
-    user: state.user,
-    error: state.error
-  }))
-
+  const user = useStore(state => state.user)
+  const updateProfile = useStore(state => state.updateProfile)
+  const isLoading = useStore(state => state.isLoading)
+  const error = useStore(state => state.error)
+  
+  const [isEditing, setIsEditing] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     confirmPassword: ''
   })
-
-  const [formErrors, setFormErrors] = useState({})
-  const [isEditing, setIsEditing] = useState(false)
-  const [message, setMessage] = useState('')
-
+  
   useEffect(() => {
     if (user) {
       setFormData({
@@ -31,100 +28,98 @@ const Profile = () => {
       })
     }
   }, [user])
-
+  
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
-    
-    // Clear error when user types
-    if (formErrors[name]) {
-      setFormErrors(prev => ({ ...prev, [name]: '' }))
-    }
   }
-
-  const validateForm = () => {
-    const errors = {}
-    
-    if (!formData.name.trim()) {
-      errors.name = 'Name is required'
-    }
-    
-    if (formData.password && formData.password.length < 6) {
-      errors.password = 'Password must be at least 6 characters'
-    }
-    
-    if (formData.password !== formData.confirmPassword) {
-      errors.confirmPassword = 'Passwords do not match'
-    }
-    
-    setFormErrors(errors)
-    return Object.keys(errors).length === 0
-  }
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault()
     
-    if (!validateForm()) return
+    // Basic validation
+    if (formData.password && formData.password !== formData.confirmPassword) {
+      // You could set an error state here, but for simplicity we'll just alert
+      alert('Passwords do not match')
+      return
+    }
     
-    // Here you would update user profile
-    // This is a simplified example without actual API calls
-    setMessage('Profile updated successfully')
-    setIsEditing(false)
+    const userData = {
+      name: formData.name,
+      email: formData.email
+    }
+    
+    // Only include password if it was provided
+    if (formData.password) {
+      userData.password = formData.password
+    }
+    
+    const success = await updateProfile(userData)
+    if (success) {
+      setIsEditing(false)
+      // Clear password fields
+      setFormData(prev => ({
+        ...prev,
+        password: '',
+        confirmPassword: ''
+      }))
+    }
   }
-
-  if (!user) return <div>Loading...</div>
-
+  
+  const handleEditClick = (e) => {
+    e.preventDefault() // Add this to prevent any form submission
+    console.log("Edit button clicked")
+    setIsEditing(true)
+  }
+  
   return (
-    <div className="max-w-3xl mx-auto">
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="p-6">
-          <h2 className="text-2xl font-bold mb-6">Your Profile</h2>
-          
-          {message && (
-            <div className="mb-4 bg-green-50 text-green-600 p-3 rounded border border-green-200">
-              {message}
-            </div>
-          )}
-          
-          {error && <Error message={error} />}
-          
+    <div className="max-w-2xl mx-auto">
+      <h1 className="text-3xl font-bold mb-8">Your Profile</h1>
+      
+      {error && <Error message={error} />}
+      
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h2 className="text-xl font-bold mb-4">Account Information</h2>
+        
+        <div>
           <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
               <FormInput
-                label="Full Name"
-                id="name"
+                label="Name"
+                type="text"
+                name="name"
                 value={formData.name}
                 onChange={handleChange}
-                error={formErrors.name}
                 disabled={!isEditing}
+                required
               />
               
               <FormInput
-                label="Email Address"
-                id="email"
+                label="Email"
                 type="email"
+                name="email"
                 value={formData.email}
-                disabled={true} // Email can't be changed
+                onChange={handleChange}
+                disabled={!isEditing}
+                required
               />
               
               {isEditing && (
                 <>
                   <FormInput
                     label="New Password (leave blank to keep current)"
-                    id="password"
                     type="password"
+                    name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    error={formErrors.password}
                   />
                   
                   <FormInput
                     label="Confirm New Password"
-                    id="confirmPassword"
                     type="password"
+                    name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    error={formErrors.confirmPassword}
                   />
                 </>
               )}
@@ -133,16 +128,30 @@ const Profile = () => {
             <div className="mt-6 flex space-x-4">
               {isEditing ? (
                 <>
-                  <Button type="submit">Save Changes</Button>
+                  <Button type="submit" disabled={isLoading}>
+                    {isLoading ? 'Saving...' : 'Save Changes'}
+                  </Button>
                   <Button 
                     variant="outline" 
-                    onClick={() => setIsEditing(false)}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      setIsEditing(false)
+                    }}
+                    disabled={isLoading}
+                    type="button"
                   >
                     Cancel
                   </Button>
                 </>
               ) : (
-                <Button onClick={() => setIsEditing(true)}>Edit Profile</Button>
+                <div onClick={(e) => e.stopPropagation()}>
+                  <Button 
+                    onClick={handleEditClick}
+                    type="button"
+                  >
+                    Edit Profile
+                  </Button>
+                </div>
               )}
             </div>
           </form>

@@ -1,6 +1,5 @@
 // Load environment variables first
-const dotenv = require('dotenv');
-dotenv.config();
+require('dotenv').config();
 
 // Then import other dependencies
 const express = require('express');

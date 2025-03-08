@@ -15,9 +15,36 @@ const Products = () => {
     priceRange: ''
   })
 
+  // Debugging state
+  const [debug, setDebug] = useState({
+    apiChecked: false,
+    apiResponse: null
+  })
+
   useEffect(() => {
-    fetchProducts()
-  }, [fetchProducts])
+    console.log('Products component mounted, calling fetchProducts()');
+    fetchProducts();
+    
+    // Manual API check for debugging
+    fetch('http://localhost:5002/api/products')
+      .then(res => res.json())
+      .then(data => {
+        console.log('Direct API fetch result:', data);
+        setDebug({
+          apiChecked: true,
+          apiResponse: data
+        });
+      })
+      .catch(err => {
+        console.error('Direct API fetch error:', err);
+        setDebug({
+          apiChecked: true,
+          apiResponse: err.message
+        });
+      });
+  }, [fetchProducts]);
+
+  console.log('Current products in store:', products);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target
@@ -47,6 +74,21 @@ const Products = () => {
   return (
     <div className="container mx-auto">
       <h1 className="text-3xl font-bold mb-8">All Products</h1>
+      
+      {/* Debug information - remove in production
+      {process.env.NODE_ENV !== 'production' && (
+        <div className="bg-blue-50 p-4 mb-4 rounded">
+          <h3 className="font-bold">Debug Info:</h3>
+          <div>Products in store: {products.length}</div>
+          <div>API checked: {debug.apiChecked ? 'Yes' : 'No'}</div>
+          <div>API response: {debug.apiResponse ? 
+            (Array.isArray(debug.apiResponse) ? 
+              `Array with ${debug.apiResponse.length} items` : 
+              JSON.stringify(debug.apiResponse).substring(0, 100) + '...') : 
+            'None'
+          }</div>
+        </div>
+      )} */}
       
       {error && <Error message={error} />}
       

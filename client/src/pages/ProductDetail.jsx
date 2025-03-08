@@ -17,6 +17,7 @@ const ProductDetail = () => {
   const error = useStore(state => state.error)
 
   useEffect(() => {
+    console.log('Fetching product with ID:', id);
     fetchProductById(id)
   }, [fetchProductById, id])
 

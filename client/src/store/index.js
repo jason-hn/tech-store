@@ -61,10 +61,7 @@ export const useStore = create(
           set({ user: response.data, isLoading: false })
           return true
         } catch (err) {
-          set({ 
-            error: err.response?.data?.message || 'Failed to update profile', 
-            isLoading: false 
-          })
+          set({ error: err.response?.data?.message || 'Profile update failed', isLoading: false })
           return false
         }
       },
@@ -128,16 +125,26 @@ export const useStore = create(
       },
 
       // Product actions
-      fetchProducts: async (filters = {}) => {
-        set({ isLoading: true, error: null })
+      fetchProducts: async () => {
+        set({ isLoading: true, error: null });
         try {
-          const response = await api.get('/products', { params: filters })
-          set({ products: response.data, isLoading: false })
+          console.log('Fetching products...');
+          const response = await api.get('/products');
+          console.log('Products response:', response.data);
+          
+          // Make sure we have an array and transform _id to id for frontend compatibility
+          const formattedProducts = response.data.map(product => ({
+            ...product,
+            id: product._id // Ensure id property exists for the frontend
+          }));
+          
+          set({ products: formattedProducts, isLoading: false });
         } catch (err) {
+          console.error('Error fetching products:', err);
           set({ 
             error: err.response?.data?.message || 'Failed to fetch products', 
             isLoading: false 
-          })
+          });
         }
       },
 

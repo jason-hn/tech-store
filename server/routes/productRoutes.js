@@ -9,14 +9,10 @@ const { protect, admin } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-router.route('/')
-  .get(getProducts)
-  .post(protect, admin, createProduct);
+router.get('/', getProducts);
+router.post('/', protect, admin, createProduct);
 
-router.route('/:id')
-  .get(getProductById);
-
-router.route('/:id/reviews')
-  .post(protect, createProductReview);
+router.get('/:id', getProductById);
+router.post('/:id/reviews', protect, createProductReview);
 
 module.exports = router; 

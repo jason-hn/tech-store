@@ -1,12 +1,24 @@
 import { Link } from 'react-router-dom'
 import { useStore } from '../../store'
+import { formatCurrency } from '../../utils/formatters'
 
 const ProductCard = ({ product }) => {
   const addToCart = useStore(state => state.addToCart)
+  
+  // Handle both _id and id for compatibility
+  const productId = product.id || product._id
+  
+  const handleAddToCart = () => {
+    addToCart({
+      ...product,
+      id: productId,
+      quantity: 1
+    })
+  }
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-      <Link to={`/products/${product.id}`}>
+    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+      <Link to={`/products/${productId}`}>
         <img 
           src={product.image} 
           alt={product.name} 
@@ -15,26 +27,30 @@ const ProductCard = ({ product }) => {
       </Link>
       
       <div className="p-4">
-        <Link to={`/products/${product.id}`}>
-          <h3 className="text-lg font-semibold line-clamp-1 hover:text-primary">
-            {product.name}
-          </h3>
+        <Link to={`/products/${productId}`} className="block mb-2">
+          <h3 className="font-bold text-lg hover:text-primary transition">{product.name}</h3>
         </Link>
         
-        <p className="text-gray-600 text-sm mt-1 line-clamp-2">
-          {product.description}
-        </p>
-        
-        <div className="mt-4 flex justify-between items-center">
-          <span className="text-lg font-bold">${product.price.toFixed(2)}</span>
+        <div className="flex justify-between items-center mb-4">
+          <span className="text-lg font-bold">{formatCurrency(product.price)}</span>
           
-          <button 
-            onClick={() => addToCart(product)}
-            className="btn btn-primary text-sm"
-          >
-            Add to Cart
-          </button>
+          <div className="flex items-center">
+            <span className="text-yellow-500 mr-1">★</span>
+            <span>{product.rating}</span>
+          </div>
         </div>
+        
+        <button 
+          onClick={handleAddToCart}
+          disabled={product.countInStock === 0}
+          className={`w-full py-2 rounded-md transition ${
+            product.countInStock > 0 
+              ? 'bg-primary text-white hover:bg-primary-dark' 
+              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+          }`}
+        >
+          {product.countInStock > 0 ? 'Add to Cart' : 'Out of Stock'}
+        </button>
       </div>
     </div>
   )

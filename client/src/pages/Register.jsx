@@ -7,11 +7,9 @@ import Error from '../components/common/Error'
 
 const Register = () => {
   const navigate = useNavigate()
-  const { register, isLoading, error } = useStore(state => ({
-    register: state.register,
-    isLoading: state.isLoading,
-    error: state.error
-  }))
+  const register = useStore(state => state.register)
+  const isLoading = useStore(state => state.isLoading)
+  const error = useStore(state => state.error)
 
   const [formData, setFormData] = useState({
     name: '',
