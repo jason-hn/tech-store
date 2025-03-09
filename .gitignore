@@ -1,6 +1,9 @@
-# Node dependencies
-client/node_modules/
-server/node_modules/
+# Certificates and keys
+*.pem
+*.key
+*.crt
+*.cert
+server/config/certificates/
 
 # Environment variables
 .env
@@ -8,6 +11,10 @@ server/node_modules/
 .env.development
 .env.test
 .env.production
+
+# Node dependencies
+client/node_modules/
+server/node_modules/
 
 # Build files
 /client/dist
