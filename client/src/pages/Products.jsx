@@ -25,7 +25,9 @@ const Products = () => {
     console.log('Products component mounted, calling fetchProducts()');
     fetchProducts();
     
-    // Manual API check for debugging
+    // Comment out or remove this debug code in production
+    // Or update it to use the API_URL from environment
+    /* 
     fetch('http://localhost:5002/api/products')
       .then(res => res.json())
       .then(data => {
@@ -42,6 +44,7 @@ const Products = () => {
           apiResponse: err.message
         });
       });
+    */
   }, [fetchProducts]);
 
   console.log('Current products in store:', products);
