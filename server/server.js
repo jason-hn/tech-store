@@ -4,8 +4,6 @@ require('dotenv').config();
 // Then import other dependencies
 const express = require('express');
 const cors = require('cors');
-const https = require('https');
-const fs = require('fs');
 const path = require('path');
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
@@ -35,18 +33,9 @@ app.get('/', (req, res) => {
 // Error handler middleware
 app.use(errorHandler);
 
-// SSL Certificate options
-const sslOptions = {
-  // key: fs.readFileSync(path.join(__dirname, 'config/certificates/key.pem')),
-  // cert: fs.readFileSync(path.join(__dirname, 'config/certificates/cert.pem')),
-  key: fs.readFileSync(path.join(__dirname, 'config/certificates/localhost+2-key.pem')),
-  cert: fs.readFileSync(path.join(__dirname, 'config/certificates/localhost+2.pem')),
-};
-
 // Start server
 const PORT = process.env.PORT || 5002;
 
-// Create HTTPS server
-https.createServer(sslOptions, app).listen(PORT, () => {
-  console.log(`HTTPS Server running on port ${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
