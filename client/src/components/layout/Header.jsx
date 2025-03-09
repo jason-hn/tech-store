@@ -6,6 +6,9 @@ const Header = () => {
   const cart = useStore(state => state.cart)
   const user = useStore(state => state.user)
   const logout = useStore(state => state.logout)
+  
+  // Calculate total quantity of all items in the cart
+  const totalQuantity = cart.items.reduce((total, item) => total + item.quantity, 0)
 
   return (
     <header className="bg-dark text-light shadow-md">
@@ -17,9 +20,9 @@ const Header = () => {
           
           <Link to="/cart" className="relative">
             <FaShoppingCart className="text-xl" />
-            {cart.items.length > 0 && (
+            {totalQuantity > 0 && (
               <span className="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                {cart.items.length}
+                {totalQuantity}
               </span>
             )}
           </Link>

@@ -5,11 +5,13 @@ import Home from './pages/Home'
 import Products from './pages/Products'
 import ProductDetail from './pages/ProductDetail'
 import Cart from './pages/Cart'
+import CheckoutSuccess from './pages/CheckoutSuccess'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Profile from './pages/Profile'
 import NotFound from './pages/NotFound'
 import ProtectedRoute from './components/common/ProtectedRoute'
+import Checkout from './pages/Checkout'
 
 function App() {
   return (
@@ -27,6 +29,16 @@ function App() {
             <Route path="/profile" element={
               <ProtectedRoute>
                 <Profile />
+              </ProtectedRoute>
+            } />
+            <Route path="/checkout" element={
+              <ProtectedRoute>
+                <Checkout />
+              </ProtectedRoute>
+            } />
+            <Route path="/checkout/success" element={
+              <ProtectedRoute>
+                <CheckoutSuccess />
               </ProtectedRoute>
             } />
             <Route path="*" element={<NotFound />} />
