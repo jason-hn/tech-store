@@ -10,6 +10,8 @@ const keyPath = path.resolve(__dirname, '../server/config/certificates/localhost
 
 // Only use HTTPS if certificates exist
 if (fs.existsSync(certPath) && fs.existsSync(keyPath)) {
+  console.warn('mkcert certificates found. HTTPS will be enabled properly.')
+  
   httpsConfig = {
     key: fs.readFileSync(keyPath),
     cert: fs.readFileSync(certPath),
